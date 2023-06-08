@@ -7,3 +7,4 @@
 ## 4. you can change the tags place=neighbourhood in code
 ## 5. Now you can run the code in terminal as follow. 
 ```python single_response.py```
+## 6. The output will be stored as place.csv in the current directory.
