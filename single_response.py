@@ -106,19 +106,23 @@ for feature in changes:
 
             coordinates = []
             old_coordinates = []
-            if 'nodes' in x:
+            if x['type']=='node' and 'lat' in x and 'lon' in x:
+                coordinates.append((float(x['lon']), float(x['lat'])))
+            elif 'nodes' in x:
                 for node in x["nodes"]:
                     coordinates.append((float(node["lon"]), float(node["lat"])))
+            if 'old' in x:
+                if x['old']['type']=='node' and 'lat' in x['old'] and 'lon' in x['old']:
+                    old_coordinates.append((float(x['old']['lon']), float(x['old']['lat'])))
+                elif 'old' in x and 'nodes' in x['old']:
+                    for node in x['old']["nodes"]:
+                        old_coordinates.append((float(node["lon"]), float(node["lat"])))
 
-            if 'old' in x and 'nodes' in x['old']:
-                for node in x['old']["nodes"]:
-                    old_coordinates.append((float(node["lon"]), float(node["lat"])))
-
-            geometry = geojson.LineString(coordinates) if x["type"] == "way" else geojson.Polygon([coordinates])
+            geometry = geojson.LineString(coordinates) if x["type"] == "way" else geojson.Point([coordinates])
             feature_geojson = geojson.Feature(geometry=geometry, properties={})
             new_geometry.append(feature_geojson)
 
-            geometry_1 = geojson.LineString(old_coordinates) if x["type"] == "way" else geojson.Polygon([old_coordinates])
+            geometry_1 = geojson.LineString(old_coordinates) if x["type"] == "way" else geojson.Point([old_coordinates])
             feature_geojson = geojson.Feature(geometry=geometry_1, properties={})
             old_geometry.append(feature_geojson)
             geometry_changed = "No"
